@@ -3,14 +3,13 @@
 ![image001](https://github.com/user-attachments/assets/8e445a4f-cf18-452b-9d3a-2721631b1e99)
 
 
-
 ![image007](https://github.com/user-attachments/assets/4df4427c-a9ef-4ceb-a6c7-30cd586931e1)
 
 ## Giriş
 
->   Ubuntu Nginx Web sunucunuz var ve bu sunucuda oluşan erişim loglarını AWStats ile işleyerek anlamlı bir şekilde görüntülemek istiyorsunuz. AWStats sayesinde web sunucunuzun erişim loglarını anlamlı bir şekilde analiz ederek, detaylı istatistikler elde edebilirsiniz.   
->     
->   Bu kılavuz ile Ubuntu sunucu üzerinde yapacağınız AWStats kurulumu ile Nginx web sunucunuzda bulunan erişim loglarını AWStats web arayüzü ile görüntüleyebileceksiniz.
+Ubuntu Nginx Web sunucunuz var ve bu sunucuda oluşan erişim loglarını AWStats ile işleyerek anlamlı bir şekilde görüntülemek istiyorsunuz. AWStats sayesinde web sunucunuzun erişim loglarını anlamlı bir şekilde analiz ederek, detaylı istatistikler elde edebilirsiniz.   
+
+Bu kılavuz ile Ubuntu sunucu üzerinde yapacağınız AWStats kurulumu ile Nginx web sunucunuzda bulunan erişim loglarını AWStats web arayüzü ile görüntüleyebileceksiniz.
 
 ## Kurulum
 
@@ -30,7 +29,9 @@ exports dosyasını bir nano text editörü ile açarak paylaşım ayarlarını 
 
 >   **nano /etc/exports**
 
-**/var/log/nginx \<IP\>(ro,sync,no_subtree_check,all_squash,anonuid=33,anongid=33)**
+```
+/var/log/nginx <IP>(ro,sync,no_subtree_check,all_squash,anonuid=33,anongid=33)
+```
 
 \<IP\> adresi olarak belirtilen alanı “\<,\>” işaretleri olmadan paylaşıma bağlanacak AWStats sunucusu IP adresiyle değiştiriniz.
 
@@ -61,7 +62,9 @@ Paylaşım alanını aşağıdaki şekilde oluşturunuz ve fstab dosyasına sunu
 
 >   **sudo nano /etc/fstab**
 
-\<IP-Adresi\>:/var/log/nginx /mnt/websitesi nfs defaults,ro 0 0
+```
+<IP-Adresi>:/var/log/nginx /mnt/websitesi nfs defaults,ro 0 0
+```
 
 Yukarıdaki \<IP-Adresi\> alanına Nginx web sunucusunda tanımlanan paylaşım alanı için ilgili sunucunun IP adresini “\<,\>” işaretleri olmadan yazınız.
 
@@ -93,11 +96,13 @@ Kurulumlar sonrasında Apache için awstats.conf dosyasını oluşturunuz.
 
 Dosya içeriğini aşağıdaki şekilde oluşturunuz.
 
+```
 Alias /awstatsclasses "/usr/share/awstats/lib/"  
 Alias /awstats-icon "/usr/share/awstats/icon/"  
 Alias /awstatscss "/usr/share/doc/awstats/examples/css"  
 ScriptAlias /awstats/ /usr/lib/cgi-bin/  
 Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch  
+```
 
 Apache web sunucusunun CGI desteğini ve AWStats konfigürasyonunu aktif ediniz.
 
@@ -117,23 +122,28 @@ awstats.websitesi.conf dosyasında aşağıdaki değişiklikleri yapınız.
 
 Log dosyasının okunacağı yolu belirtiniz:
 
-**LogFile="/mnt/websitesi/access.log"**
+```
+LogFile="/mnt/websitesi/access.log"
+```
 
 Site Adını belirtiniz:
 
-**SiteDomain="websitesi"**
+```
+SiteDomain="websitesi"
+```
 
 Websitesi adını belirtiniz:
-
-**HostAliases="localhost 127.0.0.1 websitesi"**
-
+```
+HostAliases="localhost 127.0.0.1 websitesi"
+```
 Performans için DNS çözümlemesini kapatabilirsiniz.
-
-**DNSLookup=0**
-
+```
+DNSLookup=0
+```
 Nginx log düzenine göre analiz için Logformat değerini ayarlayınız:
-
-**LogFormat=1**
+```
+LogFormat=1
+```
 
 Log dosyasının analizi ve son logların AWStats ile işlenmesi için aşağıdaki komutu kullanınız.
 
@@ -145,10 +155,13 @@ Aşağıdaki şekilde crontab dosyasını açınız ve aşağıdaki zamanlanmı�
 
 >   **nano /etc/crontab**
 
-\* * * * * root /usr/lib/cgi-bin/awstats.pl -config=websitesi -update > /dev/null
+```
+* * * * * root /usr/lib/cgi-bin/awstats.pl -config=websitesi -update > /dev/null
+```
 
 >   **systemctl restart cron.service**
 
 AWStats web sitesine erişim için aşağıdaki adresi kullanınız.
 
 >   **http://\<AWStats-Sunucu-IP-Adresi\>/awstats/awstats.pl?config=websitesi**
+
